@@ -21,7 +21,7 @@
  */
 
 using System;
-
+using System.ComponentModel;
 using KNXLib;
 using KNXLib.DPT;
 
@@ -48,6 +48,16 @@ namespace HomeGenie.Automation.Scripting
         private Action<string, string> statusReceived;
         private Action<string, string> eventReceived;
         private Action<bool> statusChanged;
+        private string actionMessageCode;
+
+        /// <summary>
+        /// Set the Action Message code.
+        /// </summary>
+        public KnxClientHelper ActionMessageCode(string actionMessageCode)
+        {
+            this.actionMessageCode = actionMessageCode;
+            return this;
+        }
 
         /// <summary>
         /// Set the endpoint to connect to.
@@ -89,7 +99,8 @@ namespace HomeGenie.Automation.Scripting
         /// <param name="remotePort">Remote port.</param>
         public KnxClientHelper EndPoint(string localIp, int localPort, string remoteIp, int remotePort)
         {
-            knxEndPoint = new KnxEndPoint() {
+            knxEndPoint = new KnxEndPoint()
+            {
                 LocalIp = localIp,
                 LocalPort = localPort,
                 RemoteIp = remoteIp,
@@ -115,7 +126,7 @@ namespace HomeGenie.Automation.Scripting
             {
                 if (knxEndPoint.RemoteIp != null && knxEndPoint.LocalIp != null)
                 {
-                    knxClient = new KnxConnectionTunneling(knxEndPoint.RemoteIp, knxEndPoint.RemotePort, knxEndPoint.LocalIp, knxEndPoint.LocalPort);
+                        knxClient = new KnxConnectionTunneling(knxEndPoint.RemoteIp, knxEndPoint.RemotePort, knxEndPoint.LocalIp, knxEndPoint.LocalPort);
                 }
                 else if (knxEndPoint.LocalIp != null && knxEndPoint.LocalPort > 0)
                 {
@@ -130,11 +141,8 @@ namespace HomeGenie.Automation.Scripting
                     knxClient = new KnxConnectionRouting(knxEndPoint.LocalPort);
                 }
             }
-            knxClient.Connect();
-            knxClient.KnxConnectedDelegate += knxClient_Connected;
-            knxClient.KnxDisconnectedDelegate += knxClient_Disconnected;
-            knxClient.KnxEventDelegate += knxClient_EventReceived;
-            knxClient.KnxStatusDelegate += knxClient_StatusReceived;
+
+
             return this;
         }
 
